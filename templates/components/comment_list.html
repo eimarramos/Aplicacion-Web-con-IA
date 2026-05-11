@@ -2,21 +2,38 @@
 <div class="comments-list">
   {% for comment in post.comments|sort(attribute='created_at', reverse=true) %}
   <div class="comment-item">
-    <div class="comment-head">
-      <strong>{{ comment.author.username }}</strong>
-      <span>{{ comment.created_at.strftime('%d/%m %H:%M') }}</span>
+    <div class="comment-avatar-wrap">
+      {% if comment.author.avatar_url %}
+      <img
+        src="{{ comment.author.avatar_url }}"
+        alt="Avatar de {{ comment.author.display_name or comment.author.username }}"
+        class="comment-avatar"
+      />
+      {% else %}
+      <div class="comment-avatar fallback-avatar">
+        {{ (comment.author.display_name or comment.author.username)[0]|upper }}
+      </div>
+      {% endif %}
     </div>
-    <p>{{ comment.text }}</p>
-    {% if current_user.is_authenticated and (comment.user_id == current_user.id
-    or post.user_id == current_user.id) %}
-    <form
-      action="{{ url_for('social.delete_comment', comment_id=comment.id) }}"
-      method="post"
-    >
-      {{ like_form.hidden_tag() }}
-      <button class="btn-danger" type="submit">Eliminar comentario</button>
-    </form>
-    {% endif %}
+    <div class="comment-body">
+      <div class="comment-head">
+        <strong
+          >{{ comment.author.display_name or comment.author.username }}</strong
+        >
+        <span>{{ comment.created_at.strftime('%d/%m %H:%M') }}</span>
+      </div>
+      <p>{{ comment.text }}</p>
+      {% if current_user.is_authenticated and (comment.user_id ==
+      current_user.id or post.user_id == current_user.id) %}
+      <form
+        action="{{ url_for('social.delete_comment', comment_id=comment.id) }}"
+        method="post"
+      >
+        {{ like_form.hidden_tag() }}
+        <button class="btn-danger" type="submit">Eliminar comentario</button>
+      </form>
+      {% endif %}
+    </div>
   </div>
   {% endfor %}
 </div>

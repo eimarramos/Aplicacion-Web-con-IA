@@ -58,6 +58,15 @@
   object-fit: cover;
 }
 
+.top-avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #2f405a;
+  background: linear-gradient(145deg, #ffd4b8, #f6c7ef, #d8e0ff);
+}
+
 @media (max-width: 580px) {
   .top-bar-inner {
     padding-inline: 0.65rem;

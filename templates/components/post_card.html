@@ -1,8 +1,20 @@
 <article class="post card" style="--i: {{ post_index }}">
   <header class="post-head">
-    <div class="avatar"></div>
+    {% if post.author.avatar_url %}
+    <img
+      src="{{ post.author.avatar_url }}"
+      alt="Avatar de {{ post.author.display_name or post.author.username }}"
+      class="avatar"
+    />
+    {% else %}
+    <div class="avatar fallback-avatar">
+      {{ (post.author.display_name or post.author.username)[0]|upper }}
+    </div>
+    {% endif %}
     <div>
-      <div class="meta-name">{{ post.author.username }}</div>
+      <div class="meta-name">
+        {{ post.author.display_name or post.author.username }}
+      </div>
       <div class="meta-date">
         {{ post.created_at.strftime('%d/%m/%Y %H:%M') }}
       </div>
@@ -13,6 +25,7 @@
 
   {% if post.image_url %}
   <img
+    class="post-media"
     src="{{ post.image_url }}"
     alt="Imagen de la publicacion"
     loading="lazy"
