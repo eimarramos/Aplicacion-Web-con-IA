@@ -89,3 +89,22 @@ class CommentForm(FlaskForm):
 
 class LikeForm(FlaskForm):
     pass
+
+
+class ProfileForm(FlaskForm):
+    display_name = StringField(
+        "Nombre visible",
+        validators=[
+            DataRequired(message="El nombre visible es obligatorio."),
+            Length(max=80, message="El nombre visible no puede superar 80 caracteres."),
+        ],
+    )
+    bio = TextAreaField(
+        "Bio",
+        validators=[Optional(), Length(max=280, message="La bio no puede superar 280 caracteres.")],
+    )
+    avatar_url = StringField(
+        "URL de avatar",
+        validators=[Optional(), URL(message="Ingresa una URL valida para el avatar.")],
+    )
+    submit = SubmitField("Guardar perfil")

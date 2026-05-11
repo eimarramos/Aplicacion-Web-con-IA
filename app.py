@@ -11,6 +11,24 @@ def _ensure_legacy_schema_compatibility() -> None:
     inspector = inspect(db.engine)
     tables = inspector.get_table_names()
 
+    if "user" in tables:
+        user_columns = {column["name"] for column in inspector.get_columns("user")}
+
+        if "display_name" not in user_columns:
+            db.session.execute(text("ALTER TABLE user ADD COLUMN display_name VARCHAR(80)"))
+            db.session.commit()
+
+        if "bio" not in user_columns:
+            db.session.execute(text("ALTER TABLE user ADD COLUMN bio VARCHAR(280)"))
+            db.session.commit()
+
+        if "avatar_url" not in user_columns:
+            db.session.execute(text("ALTER TABLE user ADD COLUMN avatar_url VARCHAR(2048)"))
+            db.session.commit()
+
+        db.session.execute(text("UPDATE user SET display_name = username WHERE display_name IS NULL"))
+        db.session.commit()
+
     if "post" not in tables:
         return
 

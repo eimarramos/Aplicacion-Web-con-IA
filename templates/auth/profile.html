@@ -1,0 +1,59 @@
+{% extends 'base.html' %} {% block title %}Editar perfil | InstaClone{% endblock
+%} {% block content %}
+<section class="profile-form card">
+  <h2 class="auth-title">Configurar perfil</h2>
+
+  <div class="profile-preview">
+    {% if current_user.avatar_url %}
+    <img
+      src="{{ current_user.avatar_url }}"
+      alt="Avatar de perfil"
+      class="profile-preview-avatar"
+    />
+    {% else %}
+    <div class="profile-preview-avatar fallback-avatar">
+      {{ (current_user.display_name or current_user.username)[0]|upper }}
+    </div>
+    {% endif %}
+    <div>
+      <strong>{{ current_user.display_name or current_user.username }}</strong>
+      <p class="profile-preview-meta">@{{ current_user.username }}</p>
+    </div>
+  </div>
+
+  <form action="{{ url_for('auth.edit_profile') }}" method="post">
+    {{ form.hidden_tag() }}
+
+    <div class="profile-grid">
+      <div class="field">
+        {{ form.display_name.label }} {{ form.display_name(placeholder='Tu
+        nombre visible') }} {% for error in form.display_name.errors %}
+        <p class="error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="field">
+        {{ form.avatar_url.label }} {{
+        form.avatar_url(placeholder='https://ejemplo.com/avatar.jpg') }} {% for
+        error in form.avatar_url.errors %}
+        <p class="error">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="field">
+        {{ form.bio.label }} {{ form.bio(placeholder='Cuéntale algo a tu
+        comunidad...') }} {% for error in form.bio.errors %}
+        <p class="error">{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <a class="btn-link profile-back" href="{{ url_for('feed.index') }}"
+        >Volver al feed</a
+      >
+      {{ form.submit(class='btn-primary') }}
+    </div>
+  </form>
+</section>
+{% endblock %}

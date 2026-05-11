@@ -1,0 +1,69 @@
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.top-bar-inner {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo {
+  margin: 0;
+  font:
+    500 2rem/1 "Grand Hotel",
+    cursive;
+  letter-spacing: 0.02em;
+}
+
+.top-actions {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.icon-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-size: 0.84rem;
+  color: #333743;
+  text-decoration: none;
+  padding: 0 0.7rem;
+}
+
+.top-avatar {
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  object-fit: cover;
+}
+
+@media (max-width: 580px) {
+  .top-bar-inner {
+    padding-inline: 0.65rem;
+  }
+
+  .logo {
+    font-size: 1.8rem;
+  }
+}

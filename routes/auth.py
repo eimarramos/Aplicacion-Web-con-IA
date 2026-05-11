@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
-from forms import LoginForm, RegisterForm
+from forms import LoginForm, ProfileForm, RegisterForm
 from models import User, db
 
 
@@ -18,6 +18,7 @@ def register():
         user = User(
             username=form.username.data.strip(),
             email=form.email.data.strip().lower(),
+            display_name=form.username.data.strip(),
         )
         user.set_password(form.password.data)
         db.session.add(user)
@@ -55,3 +56,23 @@ def logout():
     logout_user()
     flash("Sesion cerrada.", "success")
     return redirect(url_for("feed.index"))
+
+
+@auth_bp.route("/profile/edit", methods=["GET", "POST"])
+@login_required
+def edit_profile():
+    form = ProfileForm(
+        display_name=current_user.display_name or current_user.username,
+        bio=current_user.bio,
+        avatar_url=current_user.avatar_url,
+    )
+
+    if form.validate_on_submit():
+        current_user.display_name = form.display_name.data.strip()
+        current_user.bio = (form.bio.data or "").strip() or None
+        current_user.avatar_url = (form.avatar_url.data or "").strip() or None
+        db.session.commit()
+        flash("Perfil actualizado.", "success")
+        return redirect(url_for("auth.edit_profile"))
+
+    return render_template("auth/profile.html", form=form)

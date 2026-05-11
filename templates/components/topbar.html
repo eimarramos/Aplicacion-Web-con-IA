@@ -5,6 +5,7 @@
     </a>
     <div class="top-actions">
       {% if current_user.is_authenticated %}
+      <a class="icon-pill" href="{{ url_for('auth.edit_profile') }}">Perfil</a>
       <span class="icon-pill">{{ current_user.username }}</span>
       <a class="icon-pill" href="{{ url_for('auth.logout') }}">Salir</a>
       {% else %}

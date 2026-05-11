@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, redirect, url_for
+from flask import Blueprint, abort, redirect, request, url_for
 from flask_login import current_user, login_required
 
 from forms import CommentForm, LikeForm
@@ -13,7 +13,7 @@ social_bp = Blueprint("social", __name__)
 def toggle_like(post_id: int):
     form = LikeForm()
     if not form.validate_on_submit():
-        return redirect(url_for("feed.index"))
+        return redirect(request.referrer or url_for("feed.index"))
 
     post = db.get_or_404(Post, post_id)
     existing = Like.query.filter_by(post_id=post.id, user_id=current_user.id).first()
@@ -24,7 +24,7 @@ def toggle_like(post_id: int):
         db.session.add(Like(post_id=post.id, user_id=current_user.id))
 
     db.session.commit()
-    return redirect(url_for("feed.index"))
+    return redirect(request.referrer or url_for("feed.index"))
 
 
 @social_bp.post("/posts/<int:post_id>/comments")
@@ -38,7 +38,7 @@ def create_comment(post_id: int):
         db.session.add(comment)
         db.session.commit()
 
-    return redirect(url_for("feed.index"))
+    return redirect(request.referrer or url_for("feed.index"))
 
 
 @social_bp.post("/comments/<int:comment_id>/delete")
@@ -46,7 +46,7 @@ def create_comment(post_id: int):
 def delete_comment(comment_id: int):
     form = LikeForm()
     if not form.validate_on_submit():
-        return redirect(url_for("feed.index"))
+        return redirect(request.referrer or url_for("feed.index"))
 
     comment = db.get_or_404(Comment, comment_id)
 
@@ -55,4 +55,4 @@ def delete_comment(comment_id: int):
 
     db.session.delete(comment)
     db.session.commit()
-    return redirect(url_for("feed.index"))
+    return redirect(request.referrer or url_for("feed.index"))
