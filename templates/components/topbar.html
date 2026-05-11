@@ -17,7 +17,7 @@
       >
       {% endif %}
       <a class="icon-pill" href="{{ url_for('auth.edit_profile') }}">Perfil</a>
-      <span class="icon-pill"
+      <span class="icon-pill top-user-name"
         >{{ current_user.display_name or current_user.username }}</span
       >
       <a class="icon-pill" href="{{ url_for('auth.logout') }}">Salir</a>

@@ -27,3 +27,23 @@
 .auth-footer a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 580px) {
+  .auth-shell {
+    margin-top: 0.75rem;
+  }
+
+  .auth-card {
+    padding: 0.9rem;
+  }
+
+  .auth-title {
+    font-size: 1.06rem;
+    margin-bottom: 0.58rem;
+  }
+
+  .auth-footer {
+    margin-top: 0.55rem;
+    font-size: 0.82rem;
+  }
+}

@@ -51,3 +51,35 @@
 .profile-back {
   text-decoration: none;
 }
+
+@media (max-width: 580px) {
+  .profile-form.card {
+    padding: 0.82rem;
+  }
+
+  .profile-preview {
+    gap: 0.58rem;
+    margin-bottom: 0.72rem;
+    padding-bottom: 0.68rem;
+  }
+
+  .profile-preview-avatar {
+    width: 2.9rem;
+    height: 2.9rem;
+  }
+
+  .profile-preview-meta {
+    font-size: 0.79rem;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .profile-actions .btn-link,
+  .profile-actions .btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+}
