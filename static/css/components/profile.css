@@ -49,7 +49,20 @@
 }
 
 .profile-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-width: 9.5rem;
+  min-height: 2.35rem;
+  padding: 0.56rem 1.1rem;
+  border-radius: 999px;
+  line-height: 1;
   text-decoration: none;
+}
+
+.profile-actions .btn-primary {
+  min-height: 2.35rem;
 }
 
 @media (max-width: 580px) {
@@ -80,6 +93,9 @@
   .profile-actions .btn-link,
   .profile-actions .btn-primary {
     width: 100%;
+    min-height: 2.2rem;
+    border-radius: 999px;
+    padding: 0.58rem 1rem;
     text-align: center;
   }
 }
