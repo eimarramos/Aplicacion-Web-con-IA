@@ -1,0 +1,16 @@
+<header class="top-bar">
+  <div class="top-bar-inner">
+    <a class="logo-link" href="{{ url_for('feed.index') }}">
+      <h1 class="logo">InstaClone</h1>
+    </a>
+    <div class="top-actions">
+      {% if current_user.is_authenticated %}
+        <span class="icon-pill">{{ current_user.username }}</span>
+        <a class="icon-pill" href="{{ url_for('auth.logout') }}">Salir</a>
+      {% else %}
+        <a class="icon-pill" href="{{ url_for('auth.login') }}">Login</a>
+        <a class="icon-pill" href="{{ url_for('auth.register') }}">Registro</a>
+      {% endif %}
+    </div>
+  </div>
+</header>

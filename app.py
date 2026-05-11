@@ -1,8 +1,44 @@
-from flask import Flask, flash, redirect, render_template, url_for
+from flask import Flask
+from sqlalchemy import inspect, text
 
 from config import Config
-from forms import PostForm
-from models import Post, db
+from extensions import login_manager
+from models import User, db
+from routes import auth_bp, feed_bp, social_bp
+
+
+def _ensure_legacy_schema_compatibility() -> None:
+    inspector = inspect(db.engine)
+    tables = inspector.get_table_names()
+
+    if "post" not in tables:
+        return
+
+    post_columns = {column["name"] for column in inspector.get_columns("post")}
+    if "user_id" in post_columns:
+        return
+
+    db.session.execute(text("ALTER TABLE post ADD COLUMN user_id INTEGER"))
+    db.session.commit()
+
+    legacy_user = User.query.filter_by(email="legacy@local").first()
+    if legacy_user is None:
+        username = "legacy_user"
+        suffix = 1
+        while User.query.filter_by(username=username).first() is not None:
+            suffix += 1
+            username = f"legacy_user_{suffix}"
+
+        legacy_user = User(username=username, email="legacy@local")
+        legacy_user.set_password("legacy-password")
+        db.session.add(legacy_user)
+        db.session.commit()
+
+    db.session.execute(
+        text("UPDATE post SET user_id = :user_id WHERE user_id IS NULL"),
+        {"user_id": legacy_user.id},
+    )
+    db.session.commit()
 
 
 def create_app(config_overrides: dict | None = None) -> Flask:
@@ -13,37 +49,19 @@ def create_app(config_overrides: dict | None = None) -> Flask:
         app.config.update(config_overrides)
 
     db.init_app(app)
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id: str):
+        return db.session.get(User, int(user_id))
 
     with app.app_context():
         db.create_all()
+        _ensure_legacy_schema_compatibility()
 
-    @app.get("/")
-    def index() -> str:
-        form = PostForm()
-        posts = Post.query.order_by(Post.created_at.desc()).all()
-        return render_template("index.html", form=form, posts=posts)
-
-    @app.post("/posts")
-    def create_post():
-        form = PostForm()
-        if form.validate_on_submit():
-            image_url = (form.image_url.data or "").strip() or None
-            post = Post(text=form.text.data.strip(), image_url=image_url)
-            db.session.add(post)
-            db.session.commit()
-            flash("Publicacion creada.", "success")
-            return redirect(url_for("index"))
-
-        posts = Post.query.order_by(Post.created_at.desc()).all()
-        return render_template("index.html", form=form, posts=posts), 400
-
-    @app.post("/posts/<int:post_id>/delete")
-    def delete_post(post_id: int):
-        post = db.get_or_404(Post, post_id)
-        db.session.delete(post)
-        db.session.commit()
-        flash("Publicacion eliminada.", "success")
-        return redirect(url_for("index"))
+    app.register_blueprint(feed_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(social_bp)
 
     return app
 

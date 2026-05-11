@@ -1,0 +1,53 @@
+<article class="post card" style="--i: {{ post_index }}">
+  <header class="post-head">
+    <div class="avatar"></div>
+    <div>
+      <div class="meta-name">{{ post.author.username }}</div>
+      <div class="meta-date">{{ post.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+    </div>
+  </header>
+
+  <p class="post-text">{{ post.text }}</p>
+
+  {% if post.image_url %}
+    <img src="{{ post.image_url }}" alt="Imagen de la publicacion" loading="lazy" />
+  {% endif %}
+
+  <div class="post-actions">
+    <div class="social-row">
+      {% if current_user.is_authenticated %}
+        {% set liked = post.likes | selectattr('user_id', 'equalto', current_user.id) | list | length > 0 %}
+        <form action="{{ url_for('social.toggle_like', post_id=post.id) }}" method="post">
+          {{ like_form.hidden_tag() }}
+          <button class="social-chip {% if liked %}liked{% endif %}" type="submit">
+            {% if liked %}❤{% else %}♡{% endif %} {{ post.likes|length }}
+          </button>
+        </form>
+      {% else %}
+        <a class="social-chip" href="{{ url_for('auth.login') }}">♡ {{ post.likes|length }}</a>
+      {% endif %}
+      <span class="social-chip">💬 {{ post.comments|length }}</span>
+    </div>
+
+    {% if current_user.is_authenticated and post.user_id == current_user.id %}
+      <form action="{{ url_for('feed.delete_post', post_id=post.id) }}" method="post">
+        {{ like_form.hidden_tag() }}
+        <button class="btn-danger" type="submit">Eliminar</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <div class="comments-shell">
+    {% include 'components/comment_list.html' %}
+
+    {% if current_user.is_authenticated %}
+      <form class="comment-form" action="{{ url_for('social.create_comment', post_id=post.id) }}" method="post">
+        {{ comment_form.hidden_tag() }}
+        {{ comment_form.text(placeholder='Escribe un comentario...') }}
+        <button class="btn-primary" type="submit">Comentar</button>
+      </form>
+    {% else %}
+      <p class="login-call">Para comentar, inicia sesion.</p>
+    {% endif %}
+  </div>
+</article>

@@ -4,9 +4,13 @@ Prototipo funcional estilo Instagram con Flask y Python.
 
 Funciones incluidas:
 
+- Registro e inicio/cierre de sesion de usuarios
 - Crear publicaciones (texto obligatorio, URL de imagen opcional)
-- Visualizar publicaciones en un feed
-- Eliminar publicaciones
+- Visualizar publicaciones en un feed publico
+- Eliminar publicaciones propias
+- Dar y quitar me gusta (toggle)
+- Comentar publicaciones
+- Eliminar comentarios (autor del comentario o autor del post)
 
 ## Requisitos
 
@@ -61,7 +65,16 @@ python app.py
 
 - app.py
 - config.py
+- extensions.py
 - models.py
 - forms.py
+- routes/auth.py
+- routes/feed.py
+- routes/social.py
+- templates/base.html
+- templates/auth/login.html
+- templates/auth/register.html
+- templates/components/post_card.html
+- templates/components/comment_list.html
 - templates/index.html
 - tests/test_app.py

@@ -1,493 +1,332 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InstaClone Feed</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Nunito+Sans:wght@500;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --bg: #fafafa;
-        --paper: #ffffff;
-        --ink: #101011;
-        --muted: #696b70;
-        --line: #dbdbdd;
-        --brand-a: #f58529;
-        --brand-b: #dd2a7b;
-        --brand-c: #8134af;
-        --brand-d: #515bd4;
-        --danger: #d92d43;
-        --shadow: 0 18px 34px rgba(16, 16, 17, 0.07);
+{% extends 'base.html' %}
+
+{% block title %}Feed | InstaClone{% endblock %}
+
+{% block head_extra %}
+  <style>
+    .feed-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 620px) minmax(240px, 300px);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .composer.card {
+      padding: 1rem 1rem 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .composer-title {
+      margin: 0 0 0.85rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .field {
+      margin-bottom: 0.75rem;
+    }
+
+    .composer textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.2rem;
+    }
+
+    .composer-hint {
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    .feed {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .post.card {
+      padding: 0.85rem 0.85rem 0.95rem;
+    }
+
+    .post-head {
+      display: flex;
+      align-items: center;
+      gap: 0.62rem;
+      margin-bottom: 0.72rem;
+    }
+
+    .avatar {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      border: 1px solid #fff;
+      padding: 2px;
+      background: linear-gradient(140deg, var(--brand-a), var(--brand-b), var(--brand-c), var(--brand-d));
+    }
+
+    .avatar::before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: #e9edf4;
+    }
+
+    .meta-name {
+      font-size: 0.93rem;
+      font-weight: 800;
+    }
+
+    .meta-date {
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .post-text {
+      white-space: pre-wrap;
+      line-height: 1.48;
+      margin: 0 0 0.72rem;
+      font-size: 0.96rem;
+    }
+
+    .post img {
+      width: 100%;
+      max-height: 560px;
+      object-fit: cover;
+      border-radius: 13px;
+      border: 1px solid var(--line);
+      margin-bottom: 0.64rem;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.7rem;
+    }
+
+    .social-row {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .social-row form {
+      margin: 0;
+    }
+
+    .social-chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.28rem 0.62rem;
+      color: #373a42;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #fbfbfc;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .social-chip.liked {
+      background: #ffeef4;
+      border-color: #ffc4d4;
+      color: #bf2346;
+    }
+
+    .comments-shell {
+      border-top: 1px solid var(--line);
+      padding-top: 0.7rem;
+    }
+
+    .comments-list {
+      display: grid;
+      gap: 0.65rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .comment-item {
+      border: 1px solid #ececee;
+      border-radius: 10px;
+      padding: 0.55rem 0.65rem;
+      background: #fcfcfd;
+    }
+
+    .comment-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .comment-item p {
+      margin: 0 0 0.45rem;
+      font-size: 0.9rem;
+    }
+
+    .comment-item .btn-danger {
+      font-size: 0.74rem;
+      padding: 0.3rem 0.62rem;
+    }
+
+    .empty-comments {
+      margin: 0 0 0.65rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .comment-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+    }
+
+    .comment-form input {
+      margin: 0;
+      height: 2.3rem;
+    }
+
+    .comment-form button {
+      height: 2.3rem;
+    }
+
+    .login-call {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 1.45rem 1rem;
+    }
+
+    .sidebar.card {
+      padding: 1rem;
+      position: sticky;
+      top: 5rem;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .profile-avatar {
+      width: 2.8rem;
+      height: 2.8rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, #ffd4b8, #f6c7ef, #d8e0ff);
+    }
+
+    .profile-main {
+      font-size: 0.86rem;
+    }
+
+    .profile-main strong {
+      display: block;
+      font-size: 0.92rem;
+    }
+
+    .helper-box {
+      border-top: 1px dashed var(--line);
+      padding-top: 0.82rem;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 900px) {
+      .feed-layout {
+        grid-template-columns: minmax(0, 640px);
+        justify-content: center;
       }
 
-      * {
-        box-sizing: border-box;
+      .sidebar {
+        display: none;
       }
+    }
+  </style>
+{% endblock %}
 
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: "Nunito Sans", "Segoe UI", sans-serif;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at 8% 14%, #ffd9c3 0%, transparent 24%),
-          radial-gradient(circle at 86% 9%, #f8c7e4 0%, transparent 20%),
-          radial-gradient(circle at 88% 93%, #d4e3ff 0%, transparent 24%),
-          var(--bg);
-      }
-
-      .top-bar {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        border-bottom: 1px solid var(--line);
-        backdrop-filter: blur(8px);
-        background: rgba(255, 255, 255, 0.88);
-      }
-
-      .top-bar-inner {
-        width: min(100%, 980px);
-        margin: 0 auto;
-        padding: 0.8rem 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .logo {
-        margin: 0;
-        font:
-          500 2rem/1 "Grand Hotel",
-          cursive;
-        letter-spacing: 0.02em;
-      }
-
-      .top-actions {
-        display: flex;
-        gap: 0.55rem;
-      }
-
-      .icon-pill {
-        width: 2.15rem;
-        height: 2.15rem;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        display: grid;
-        place-items: center;
-        background: var(--paper);
-      }
-
-      .container {
-        width: min(100%, 980px);
-        margin: 0 auto;
-        padding: 1.4rem 1rem 2rem;
-        display: grid;
-        grid-template-columns: minmax(0, 620px) minmax(240px, 300px);
-        gap: 1rem;
-        align-items: start;
-      }
-
-      .card {
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        box-shadow: var(--shadow);
-      }
-
-      .composer.card {
-        padding: 1rem 1rem 0.9rem;
-        margin-bottom: 1rem;
-        opacity: 0;
-        animation: rise 520ms ease forwards;
-      }
-
-      .composer-title {
-        margin: 0 0 0.85rem;
-        font-size: 1.05rem;
-        font-weight: 800;
-      }
-
-      .field {
-        margin-bottom: 0.75rem;
-      }
-
-      label {
-        display: block;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--muted);
-        margin-bottom: 0.35rem;
-      }
-
-      textarea,
-      input[type="url"] {
-        width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 0.7rem 0.85rem;
-        font: inherit;
-        background: #fdfdfd;
-        transition:
-          border-color 180ms ease,
-          box-shadow 180ms ease;
-      }
-
-      textarea:focus,
-      input[type="url"]:focus {
-        outline: none;
-        border-color: #c7a2ff;
-        box-shadow: 0 0 0 4px rgba(171, 116, 255, 0.14);
-      }
-
-      textarea {
-        min-height: 90px;
-        resize: vertical;
-      }
-
-      .actions {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 0.2rem;
-      }
-
-      .composer-hint {
-        font-size: 0.83rem;
-        color: var(--muted);
-      }
-
-      button {
-        border-radius: 999px;
-        padding: 0.5rem 1rem;
-        font: inherit;
-        font-weight: 800;
-        cursor: pointer;
-        transition:
-          transform 120ms ease,
-          filter 160ms ease;
-      }
-
-      button:hover {
-        transform: translateY(-1px);
-      }
-
-      .btn-primary {
-        border: none;
-        background: linear-gradient(
-          90deg,
-          var(--brand-a),
-          var(--brand-b),
-          var(--brand-c),
-          var(--brand-d)
-        );
-        color: #fff;
-      }
-
-      .btn-danger {
-        border: 1px solid #ffd0d7;
-        background: #fff2f5;
-        color: var(--danger);
-      }
-
-      .error {
-        color: var(--danger);
-        font-size: 0.82rem;
-        margin-top: 0.3rem;
-      }
-
-      .feed {
-        display: grid;
-        gap: 1rem;
-      }
-
-      .post.card {
-        padding: 0.85rem 0.85rem 0.95rem;
-        opacity: 0;
-        animation: rise 500ms ease forwards;
-        animation-delay: calc(var(--i, 0) * 80ms);
-      }
-
-      .post-head {
-        display: flex;
-        align-items: center;
-        gap: 0.62rem;
-        margin-bottom: 0.72rem;
-      }
-
-      .avatar {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 999px;
-        border: 1px solid #fff;
-        padding: 2px;
-        background: linear-gradient(
-          140deg,
-          var(--brand-a),
-          var(--brand-b),
-          var(--brand-c),
-          var(--brand-d)
-        );
-      }
-
-      .avatar::before {
-        content: "";
-        display: block;
-        width: 100%;
-        height: 100%;
-        border-radius: inherit;
-        background: #e9edf4;
-      }
-
-      .meta-name {
-        font-size: 0.93rem;
-        font-weight: 800;
-      }
-
-      .meta-date {
-        color: var(--muted);
-        font-size: 0.76rem;
-      }
-
-      .post-text {
-        white-space: pre-wrap;
-        line-height: 1.48;
-        margin: 0 0 0.72rem;
-        font-size: 0.96rem;
-      }
-
-      .post img {
-        width: 100%;
-        max-height: 560px;
-        object-fit: cover;
-        border-radius: 13px;
-        border: 1px solid var(--line);
-        margin-bottom: 0.64rem;
-      }
-
-      .post-actions {
-        display: flex;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .social-row {
-        display: flex;
-        gap: 0.45rem;
-      }
-
-      .social-chip {
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 0.28rem 0.62rem;
-        color: #373a42;
-        font-size: 0.78rem;
-        font-weight: 700;
-        background: #fbfbfc;
-      }
-
-      .flash {
-        padding: 0.72rem 0.9rem;
-        border-radius: 12px;
-        border: 1px solid #cde8d3;
-        background: #eefbf1;
-        color: #126734;
-        margin-bottom: 0.9rem;
-        box-shadow: var(--shadow);
-      }
-
-      .empty {
-        text-align: center;
-        color: var(--muted);
-        padding: 1.45rem 1rem;
-      }
-
-      .sidebar.card {
-        padding: 1rem;
-        position: sticky;
-        top: 5rem;
-      }
-
-      .profile {
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-        margin-bottom: 0.9rem;
-      }
-
-      .profile-avatar {
-        width: 2.8rem;
-        height: 2.8rem;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        background: linear-gradient(145deg, #ffd4b8, #f6c7ef, #d8e0ff);
-      }
-
-      .profile-main {
-        font-size: 0.86rem;
-      }
-
-      .profile-main strong {
-        display: block;
-        font-size: 0.92rem;
-      }
-
-      .helper-box {
-        border-top: 1px dashed var(--line);
-        padding-top: 0.82rem;
-        color: var(--muted);
-        font-size: 0.84rem;
-        line-height: 1.45;
-      }
-
-      @keyframes rise {
-        from {
-          opacity: 0;
-          transform: translateY(16px) scale(0.986);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-
-      @media (max-width: 900px) {
-        .container {
-          grid-template-columns: minmax(0, 640px);
-          justify-content: center;
-        }
-
-        .sidebar {
-          display: none;
-        }
-      }
-
-      @media (max-width: 580px) {
-        .top-bar-inner {
-          padding-inline: 0.65rem;
-        }
-
-        .logo {
-          font-size: 1.8rem;
-        }
-
-        .container {
-          padding-inline: 0.55rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header class="top-bar">
-      <div class="top-bar-inner">
-        <h1 class="logo">InstaClone</h1>
-        <div class="top-actions">
-          <span class="icon-pill">+</span>
-          <span class="icon-pill">❤</span>
-          <span class="icon-pill">✉</span>
-        </div>
-      </div>
-    </header>
-
-    <main class="container">
-      <section>
-        {% with messages = get_flashed_messages(with_categories=true) %} {% if
-        messages %} {% for category, message in messages %}
-        <div class="flash">{{ message }}</div>
-        {% endfor %} {% endif %} {% endwith %}
-
+{% block content %}
+  <div class="feed-layout">
+    <section>
+      {% if current_user.is_authenticated %}
         <section class="composer card">
           <h2 class="composer-title">Crea una publicacion</h2>
-          <form action="{{ url_for('create_post') }}" method="post">
-            {{ form.hidden_tag() }}
+          <form action="{{ url_for('feed.create_post') }}" method="post">
+            {{ post_form.hidden_tag() }}
 
             <div class="field">
-              {{ form.text.label }} {{ form.text(placeholder='Escribe tu
-              publicacion para el feed...') }} {% for error in form.text.errors
-              %}
-              <p class="error">{{ error }}</p>
+              {{ post_form.text.label }}
+              {{ post_form.text(placeholder='Escribe tu publicacion para el feed...') }}
+              {% for error in post_form.text.errors %}
+                <p class="error">{{ error }}</p>
               {% endfor %}
             </div>
 
             <div class="field">
-              {{ form.image_url.label }} {{ form.image_url(type='url',
-              placeholder='https://ejemplo.com/imagen.jpg') }} {% for error in
-              form.image_url.errors %}
-              <p class="error">{{ error }}</p>
+              {{ post_form.image_url.label }}
+              {{ post_form.image_url(type='url', placeholder='https://ejemplo.com/imagen.jpg') }}
+              {% for error in post_form.image_url.errors %}
+                <p class="error">{{ error }}</p>
               {% endfor %}
             </div>
 
             <div class="actions">
-              <span class="composer-hint"
-                >Texto obligatorio. Imagen opcional.</span
-              >
+              <span class="composer-hint">Texto obligatorio. Imagen opcional.</span>
               <button class="btn-primary" type="submit">Publicar</button>
             </div>
           </form>
         </section>
+      {% else %}
+        <article class="card empty" style="margin-bottom: 1rem;">
+          El feed es publico. Para publicar, comentar o dar like, inicia sesion.
+        </article>
+      {% endif %}
 
-        <section class="feed">
-          {% if posts %} {% for post in posts %}
-          <article class="post card" style="--i: {{ loop.index0 }}">
-            <header class="post-head">
-              <div class="avatar"></div>
-              <div>
-                <div class="meta-name">usuario_demo</div>
-                <div class="meta-date">
-                  {{ post.created_at.strftime('%d/%m/%Y %H:%M') }}
-                </div>
-              </div>
-            </header>
-
-            <p class="post-text">{{ post.text }}</p>
-            {% if post.image_url %}
-            <img
-              src="{{ post.image_url }}"
-              alt="Imagen de la publicacion"
-              loading="lazy"
-            />
-            {% endif %}
-
-            <div class="post-actions">
-              <div class="social-row">
-                <span class="social-chip">Me gusta</span>
-                <span class="social-chip">Comentar</span>
-              </div>
-              <form
-                action="{{ url_for('delete_post', post_id=post.id) }}"
-                method="post"
-              >
-                {{ form.csrf_token }}
-                <button class="btn-danger" type="submit">Eliminar</button>
-              </form>
-            </div>
-          </article>
-          {% endfor %} {% else %}
-          <article class="card empty">
-            Todavia no hay publicaciones. Crea la primera desde el formulario.
-          </article>
-          {% endif %}
-        </section>
+      <section class="feed">
+        {% if posts %}
+          {% for post in posts %}
+            {% set post_index = loop.index0 %}
+            {% include 'components/post_card.html' %}
+          {% endfor %}
+        {% else %}
+          <article class="card empty">Todavia no hay publicaciones.</article>
+        {% endif %}
       </section>
+    </section>
 
-      <aside class="sidebar card">
-        <div class="profile">
-          <div class="profile-avatar"></div>
-          <div class="profile-main">
-            <strong>usuario_demo</strong>
-            prototipo flask
-          </div>
+    <aside class="sidebar card">
+      <div class="profile">
+        <div class="profile-avatar"></div>
+        <div class="profile-main">
+          {% if current_user.is_authenticated %}
+            <strong>{{ current_user.username }}</strong>
+            comunidad instaclone
+          {% else %}
+            <strong>invitado</strong>
+            feed publico
+          {% endif %}
         </div>
-        <div class="helper-box">
-          Este diseno replica la estructura base de Instagram: barra superior,
-          composer, feed central y panel lateral.
-        </div>
-      </aside>
-    </main>
-  </body>
-</html>
+      </div>
+      <div class="helper-box">
+        Arquitectura modular por componentes: autenticacion, feed y social.
+      </div>
+    </aside>
+  </div>
+{% endblock %}

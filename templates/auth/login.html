@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | InstaClone{% endblock %}
+
+{% block content %}
+  <section class="auth-shell">
+    <article class="card auth-card">
+      <h2 class="auth-title">Inicia sesion</h2>
+      <form action="{{ url_for('auth.login') }}" method="post">
+        {{ form.hidden_tag() }}
+
+        <div class="field">
+          {{ form.email.label }}
+          {{ form.email(placeholder='correo@ejemplo.com') }}
+          {% for error in form.email.errors %}
+            <p class="error">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <div class="field">
+          {{ form.password.label }}
+          {{ form.password(placeholder='********') }}
+          {% for error in form.password.errors %}
+            <p class="error">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <div class="field">
+          <label>{{ form.remember_me() }} Recordarme</label>
+        </div>
+
+        <button class="btn-primary" type="submit">Entrar</button>
+      </form>
+      <p class="auth-footer">
+        No tienes cuenta? <a href="{{ url_for('auth.register') }}">Registrate</a>
+      </p>
+    </article>
+  </section>
+{% endblock %}
