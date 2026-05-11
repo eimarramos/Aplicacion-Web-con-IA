@@ -9,8 +9,8 @@ block content %}
         {{ post_form.hidden_tag() }}
 
         <div class="field">
-          {{ post_form.text.label }} {{ post_form.text(placeholder='Escribe tu
-          publicacion para el feed...') }} {% for error in post_form.text.errors
+          {{ post_form.text.label }} {{ post_form.text(placeholder=
+          'Escribe tu publicacion para el feed...') }} {% for error in post_form.text.errors
           %}
           <p class="error">{{ error }}</p>
           {% endfor %}
