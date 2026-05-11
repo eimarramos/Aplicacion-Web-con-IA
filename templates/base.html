@@ -66,7 +66,9 @@
 
       .logo {
         margin: 0;
-        font: 500 2rem/1 "Grand Hotel", cursive;
+        font:
+          500 2rem/1 "Grand Hotel",
+          cursive;
         letter-spacing: 0.02em;
       }
 
@@ -147,7 +149,9 @@
         padding: 0.7rem 0.85rem;
         font: inherit;
         background: #fdfdfd;
-        transition: border-color 180ms ease, box-shadow 180ms ease;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease;
       }
 
       input:focus,
@@ -178,7 +182,13 @@
 
       .btn-primary {
         border: none;
-        background: linear-gradient(90deg, var(--brand-a), var(--brand-b), var(--brand-c), var(--brand-d));
+        background: linear-gradient(
+          90deg,
+          var(--brand-a),
+          var(--brand-b),
+          var(--brand-c),
+          var(--brand-d)
+        );
         color: #fff;
       }
 
@@ -249,16 +259,14 @@
   <body>
     {% include "components/topbar.html" %}
     <main class="container">
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="flash-list">
-            {% for category, message in messages %}
-              <div class="flash {{ category }}">{{ message }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-      {% block content %}{% endblock %}
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="flash-list">
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
     </main>
   </body>
 </html>

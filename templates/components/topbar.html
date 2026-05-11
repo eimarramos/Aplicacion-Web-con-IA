@@ -5,11 +5,11 @@
     </a>
     <div class="top-actions">
       {% if current_user.is_authenticated %}
-        <span class="icon-pill">{{ current_user.username }}</span>
-        <a class="icon-pill" href="{{ url_for('auth.logout') }}">Salir</a>
+      <span class="icon-pill">{{ current_user.username }}</span>
+      <a class="icon-pill" href="{{ url_for('auth.logout') }}">Salir</a>
       {% else %}
-        <a class="icon-pill" href="{{ url_for('auth.login') }}">Login</a>
-        <a class="icon-pill" href="{{ url_for('auth.register') }}">Registro</a>
+      <a class="icon-pill" href="{{ url_for('auth.login') }}">Login</a>
+      <a class="icon-pill" href="{{ url_for('auth.register') }}">Registro</a>
       {% endif %}
     </div>
   </div>
